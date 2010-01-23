@@ -1,0 +1,214 @@
+%token UNIMPORTANT_TOK
+%token S CDO CDC INCLUDES DASHMATCH BEGINSWITH ENDSWITH CONTAINS MEDIA_NOT MEDIA_ONLY MEDIA_AND
+%token STRING INVALID IDENT NTH HEX IDSEL HASH SYM IMPORTANT_SYM
+%token EMS EXS LENGTH ANGLE TIME FREQ DIMENSION PERCENTAGE INTEGER FLOATTOKEN
+%token NOTFUNCTION URI FUNCTION UNICODERANGE MEDIAQUERY_END
+%token ALSO 
+
+%left '+' '-'
+%left '*' '/'
+%left '|'
+%right IDENT
+%nonassoc HEX IDSEL ':' '.' '[' '*'
+
+%%
+start	: stylesheet
+	;
+
+stylesheet
+	: rule_list
+	;
+
+rule_list
+	: /* empty */
+	| rule_list rule maybe_sgml
+	| rule_list ';' rule maybe_sgml
+	;
+
+maybe_sgml
+	: /* empty */
+	| maybe_sgml CDO
+	| maybe_sgml CDC
+	;
+
+rule	: ruleset
+	| sym
+	;
+
+sym	: SYM expr ';'
+	| SYM '{' declaration_list '}'
+	| SYM keyframe_name '{' keyframes_rule '}' 
+	;
+
+keyframe_name
+	: IDENT
+    	| STRING
+    	;
+
+keyframes_rule
+	: /* empty */ 
+    	| keyframes_rule keyframe_rule
+	;
+
+keyframe_rule
+	:  key_list '{' declaration_list '}'
+	;
+
+key_list
+	: key
+	| key_list ',' key
+	;
+
+key	: PERCENTAGE
+	| IDENT
+	;
+
+ruleset
+	: selector_list '{' declaration_list '}' { console.log("S> "+$1+">>"+$3); }
+	;
+
+
+selector_list
+	: selector { $$ = $1; }
+	| selector_list ',' selector { $$ = $1+$2+$3; }
+	;
+
+selector
+	: simple_selector { $$ = $1; }
+	| selector combinator simple_selector { $$ = $1 + " " + $2; }
+	;
+
+simple_selector
+	: element_name
+	| element_name specifier_list
+	| specifier_list
+	| namespace_selector element_name
+	| namespace_selector element_name specifier_list
+	| namespace_selector specifier_list
+	;
+
+namespace_selector
+	: '|' { $$ = ''; }
+	| '*' '|' { $$ = $1; }
+	| IDENT '|' { $$ = $1; }
+	;
+
+element_name
+	: IDENT
+	| '*'
+	;
+
+specifier_list
+	: specifier
+	| specifier_list specifier
+	;
+
+specifier
+	: IDSEL
+	| HEX
+	| class
+	| attrib
+	| pseudo
+	;
+
+class	: '.' IDENT { $$ = $1+$2; }
+	;
+
+attr_name
+	: IDENT
+	;
+
+attrib
+	: '[' attr_name ']'
+	| '[' attr_name match ident_or_string ']'
+	| '[' namespace_selector attr_name ']'
+	| '[' namespace_selector attr_name match ident_or_string ']'
+	;
+
+match
+	: '='
+	| INCLUDES
+	| DASHMATCH
+	| BEGINSWITH
+	| ENDSWITH
+	| CONTAINS
+	;
+
+ident_or_string
+	: IDENT
+	| STRING
+	;
+
+pseudo
+	: ':' IDENT
+	| ':' ':' IDENT
+	| ':' FUNCTION expr ')'
+	| ':' NOTFUNCTION expr /* simple_selector */ ')'
+	;
+
+
+declaration_list
+	: declaration { console.log("b1>" + $1); }
+	| decl_list { console.log("b2>" + $1); }
+	;
+
+decl_list
+	: declaration ';' { $$ = $1; console.log("a1>" + $1); }
+	| decl_list declaration ';' { $$ = $2; console.log("a2>" + $2); }
+	;
+
+declaration
+	: property ':' expr { $$ = ($1 + ">"+$3); }
+	| property ':' expr prio { $$ = ($1 + ">"+$3+" "+$4); }
+	;
+
+prio	: IMPORTANT_SYM
+	;
+
+operator
+	: '/'
+	| ','
+	| /* empty */
+	;
+
+property: IDENT
+	;
+	
+unary_operator
+        : '-' | '+'
+        ;
+
+combinator
+	: '+'
+	| '~'
+	| '>'
+	;
+
+expr	: term { $$ = $1 }
+	| expr operator term { $$ = $1 + " " + $2 + " " + $3; }
+  	;
+
+hexcolor
+	: HASH
+	;
+
+function
+	: FUNCTION expr ')'
+	;
+
+term	: INTEGER | unary_operator INTEGER
+	| EMS | unary_operator EMS
+	| EXS | unary_operator EXS
+	| LENGTH | unary_operator LENGTH
+	| ANGLE | unary_operator ANGLE
+	| TIME | unary_operator TIME
+	| FREQ | unary_operator FREQ
+	| STRING
+	| IDENT
+	| URI
+	| hexcolor
+	| function
+	;
+
+%%
+/* End of parser */

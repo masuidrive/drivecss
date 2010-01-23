@@ -1,0 +1,36 @@
+<html>
+<head>
+<title>Calculator</title>
+<script type="text/javascript" src="parser.js"></script>
+<script type="text/javascript" src="lex.js"></script>
+<script type="text/javascript">
+
+var lex;
+function main() {
+    buffer = document.compiledtext.source.value;
+    lex = new JSCSS.CSSLexer(buffer);
+    yyparse();
+    return false;
+}
+
+function yylex() {
+    var token = lex.next();
+    yylval = lex.tokenBody;
+// console.log("Tok: "+token+" "+yylval);
+    return(token);
+}
+
+function answer(val) {
+    document.compiledtext.result.value = val;
+}
+</script>
+</head>
+<body>
+Enter expression to compute:
+<form name="compiledtext" id="compiledtext" onsubmit="return main()">
+   <textarea type="text" name="source" cols="100" rows="10"></textarea><br/>
+   <input name="answer" type="button" value="Translate" onclick="main()"><br/><br/>
+   <textarea type="text" name="result" cols="100" rows="10"></textarea><br/>
+</form>
+</body>
+</html>
