@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Calculator</title>
+<title>YAECSS converter</title>
 <script type="text/javascript" src="parser.js"></script>
 <script type="text/javascript" src="lex.js"></script>
 <script type="text/javascript">
@@ -8,21 +8,12 @@
 var lex;
 function main() {
     buffer = document.compiledtext.source.value;
-    lex = new JSCSS.CSSLexer(buffer);
-    yyparse();
+    lex = new YAECSS.CSSLexer(buffer);
+    parser = new YAECSS.CSSParser(lex);
+    parser.parse();
     return false;
 }
 
-function yylex() {
-    var token = lex.next();
-    yylval = lex.tokenBody;
-// console.log("Tok: "+token+" "+yylval);
-    return(token);
-}
-
-function answer(val) {
-    document.compiledtext.result.value = val;
-}
 </script>
 </head>
 <body>

@@ -17,6 +17,7 @@ load('env-js/env.rhino.js');
                 };
                 //hook into qunit.done
                 QUnit.done = function(pass, fail){
+/*
                     $env.warn('Writing Results to File');
                     jQuery('script').each(function(){
                         this.type = 'text/envjs';
@@ -25,6 +26,7 @@ load('env-js/env.rhino.js');
                         document.documentElement.xml, 
                         $env.location('jqenv-'+Date.now()+'.html')
                     );
+*/
                 };
                 
                 //allow jquery to run ajax

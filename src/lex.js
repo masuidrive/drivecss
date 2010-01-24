@@ -1,7 +1,12 @@
-/* Lexical analyzer */
-JSCSS = {};
+/* Lexical analyzer
 
-JSCSS.CSSLexer = function(source) {
+   Originai is below address
+   http://translate.google.com/translate?u=http%3A%2F%2Fd.hatena.ne.jp%2Famachang%2F20080502%2F1209732467&sl=ja
+*/
+var YAECSS;
+YAECSS = YAECSS || {};
+
+YAECSS.CSSLexer = function(source) {
     this.source = source;
     this.reset();
 };
@@ -31,51 +36,51 @@ JSCSS.CSSLexer = function(source) {
             'nth',        /(-?[0-9]*n[\+-][0-9]+)|(-?[0-9]*n)/
 	],
 	rules: [
-	    S, [/{s}/],
-	    CDO, ["<!--"],
-	    CDC, ["-->"],
-	    INCLUDES, ["~="],
-	    DASHMATCH, ["!="],
-            BEGINSWITH, ["^="],
-            ENDSWITH, ["$="],
-            CONTAINS, ["*="],
-            MEDIA_NOT, ["not", 'mediaquery'],
-            MEDIA_ONLY, ["only", 'mediaquery'],
-            MEDIA_AND, ["and", 'mediaquery'],
+	    YAECSS.token.S, [/{s}/],
+	    YAECSS.token.CDO, ["<!--"],
+	    YAECSS.token.CDC, ["-->"],
+	    YAECSS.token.INCLUDES, ["~="],
+	    YAECSS.token.DASHMATCH, ["!="],
+            YAECSS.token.BEGINSWITH, ["^="],
+            YAECSS.token.ENDSWITH, ["$="],
+            YAECSS.token.CONTAINS, ["*="],
+            YAECSS.token.MEDIA_NOT, ["not", 'mediaquery'],
+            YAECSS.token.MEDIA_ONLY, ["only", 'mediaquery'],
+            YAECSS.token.MEDIA_AND, ["and", 'mediaquery'],
 	    
-	    STRING, [/{string}/],
-	    INVALID, [/{invalid}/],
+	    YAECSS.token.STRING, [/{string}/],
+	    YAECSS.token.INVALID, [/{invalid}/],
 	    
-	    IDENT, [/{ident}/],
-            NTH, [/{nth}/],
-            HEX, [/#{hexcolor}/],
-            IDSEL, [/#{ident}/],
+	    YAECSS.token.IDENT, [/{ident}/],
+            YAECSS.token.NTH, [/{nth}/],
+            YAECSS.token.HEX, [/#{hexcolor}/],
+            YAECSS.token.IDSEL, [/#{ident}/],
 	    
-	    HASH, [/#{hash}/],
+	    YAECSS.token.HASH, [/#{hash}/],
 	    
-	    SYM, [/@{h}/],
+	    YAECSS.token.SYM, [/@{h}/],
 	    
-	    IMPORTANT_SYM, [/!({w})*important/],
+	    YAECSS.token.IMPORTANT_SYM, [/!({w})*important/],
 	    
-            EMS, [/{num}{w}em/],
-            EXS, [/{num}{w}ex/],
-            LENGTH, [/{num}{w}(px|cm|mm|pt|pc)/],
-            ANGLE, [/{num}{w}(deg|rad|grad)/],
-            TIME, [/{num}{w}(ms|s)/],
-            FREQ, [/{num}{w}(hz|khz)/],
-            DIMENSION, [/{num}{w}{ident}/],
-	    PERCENTAGE, [/{num}{w}%+/],
-            INTEGER, [/{intnum}/],
-            FLOATTOKEN, [/{num}/],
+            YAECSS.token.EMS, [/{num}{w}em/],
+            YAECSS.token.EXS, [/{num}{w}ex/],
+            YAECSS.token.LENGTH, [/{num}{w}(px|cm|mm|pt|pc)/],
+            YAECSS.token.ANGLE, [/{num}{w}(deg|rad|grad)/],
+            YAECSS.token.TIME, [/{num}{w}(ms|s)/],
+            YAECSS.token.FREQ, [/{num}{w}(hz|khz)/],
+            YAECSS.token.DIMENSION, [/{num}{w}{ident}/],
+	    YAECSS.token.PERCENTAGE, [/{num}{w}%+/],
+            YAECSS.token.INTEGER, [/{intnum}/],
+            YAECSS.token.FLOATTOKEN, [/{num}/],
 
-            NOTFUNCTION, ["not("],
-	    URI, [/(?:url\({w}{string}{w}\))|(?:url\({w}{url}{w}\))/],
-            FUNCTION, [/{ident}{w}\(/],
-            UNICODERANGE, [/(?:U\+{range})|(?:U\+{h}{1,6}-{h}{1,6})/],
+            YAECSS.token.NOTFUNCTION, ["not("],
+	    YAECSS.token.URI, [/(?:url\({w}{string}{w}\))|(?:url\({w}{url}{w}\))/],
+            YAECSS.token.FUNCTION, [/{ident}{w}\(/],
+            YAECSS.token.UNICODERANGE, [/(?:U\+{range})|(?:U\+{h}{1,6}-{h}{1,6})/],
 	    
-            MEDIAQUERY_END, [/{|;/, 'mediaquery', 'INITIAL', true],
+            YAECSS.token.MEDIAQUERY_END, [/{|;/, 'mediaquery', 'INITIAL', true],
             
-            ALSO, [/./, undefined, undefined, true]
+            YAECSS.token.ALSO, [/./, undefined, undefined, true]
 	]
     };
     
@@ -105,20 +110,20 @@ JSCSS.CSSLexer = function(source) {
         }
     }
 
-    JSCSS.CSSLexer.rules = rules;
+    YAECSS.CSSLexer.rules = rules;
 })();
 
 
-JSCSS.CSSLexer.prototype = {
+YAECSS.CSSLexer.prototype = {
     state: 'INITIAL',
     source: null,
     cur: null,
-    tokneBody: null,
+    value: null,
     next: function() {
 	this.cur = this.cur.replace(/[ \t\r\n\f]+/, '');
 	if(!this.cur) return 0;
 	
-        var rules = JSCSS.CSSLexer.rules;
+        var rules = YAECSS.CSSLexer.rules;
         var m, matches = [];
         for (var i = 0; i < rules.length; i += 2) {
             var n = rules[i];
@@ -156,7 +161,7 @@ JSCSS.CSSLexer.prototype = {
         if (state != undefined) {
             this.state = state;
         }
-        this.tokenBody = tokenBody;
+        this.value = tokenBody;
         this.cur = this.cur.substring(length);
         if (token == 0) {
             return 0;
@@ -166,6 +171,6 @@ JSCSS.CSSLexer.prototype = {
     reset: function() {
         this.cur = this.source;
     },
-    constructor: JSCSS.CSSLexer
+    constructor: YAECSS.CSSLexer
 };
 
