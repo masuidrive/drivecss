@@ -1,3 +1,6 @@
+#
+# Ruby License - Keiji Yoshimi
+# http://d.hatena.ne.jp/walf443/20070301/1172762706
 require File.join(File.dirname(__FILE__), 'observer')
 
 class Pathname
