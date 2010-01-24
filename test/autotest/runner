@@ -28,20 +28,28 @@ block = lambda do |path, result|
   unansi_clear
   puts "#{path} updated on #{result}"
   result = `cd \"#{File.join(File.dirname(__FILE__), '..', '..')}\"; make test-all`
-  pass = fail = []
+  passed, failed = [], []
   result.each do |line|
-    if line.include?('[PASS]')
+    if line.include?('[PASS]') 
+      passed.push line
       print_green line
     elsif line.include?('[FAIL]')
+      failed.push line
       print_red line
     else
       print  line
     end
   end
+  puts "----------------"
+  if failed.empty?
+    print_green "Passed: #{passed.length}, Failed: #{failed.length}\n\n"
+  else
+    print_red "Passed: #{passed.length}, Failed: #{failed.length}\n\n"
+  end
+
 end
 
-unansi_clear
-puts "waiting updated\n"
+block.call('','')
 observe_manager = Pathname::ObserveManager.new
 observe_manager.add_paths File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'src', '*.js')), &block
 observe_manager.add_paths File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'test', 'unit', '*.js')), &block
