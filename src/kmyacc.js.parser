@@ -12,7 +12,6 @@ YAECSS.token.%s = %n;
 $endtokenval
 
 YAECSS.CSSParser = function(lexer) {
-    this.yylval = null;
     this.lexer = lexer;
 };
 
@@ -80,7 +79,7 @@ YAECSS.CSSParser = function(lexer) {
     
     YAECSS.CSSParser.prototype = {
 	/** lexical element object **/
-	yylval: null,
+	token: null,
 	lexer: null,
 
 	parse: function() {
@@ -101,8 +100,15 @@ $endif
 		    yyn = yydefault[yystate];
 		else {
 		    if (yychar < 0) {
-			if ((yychar = this.lexer.next()) <= 0) yychar = 0;
-			yychar = yychar < YYMAXLEX ? yytranslate[yychar] : YYBADCH;
+		        this.token = this.lexer.next();
+			if (this.token) {
+			    yychar = this.token.id < YYMAXLEX ? yytranslate[this.token.id] : YYBADCH;
+			}
+			else {
+			    yychar = 0;
+			}
+			// if ((yychar = this.lexer.next()) <= 0) yychar = 0;
+			// yychar = yychar < YYMAXLEX ? yytranslate[yychar] : YYBADCH;
 $if -t
 			YYTRACE_READ(yychar);
 $endif
@@ -129,7 +135,7 @@ $endif
 			    yysp++;
 			    
 			    yysstk[yysp] = yystate = yyn;
-			    yyastk[yysp] = this.lexer.value;
+			    yyastk[yysp] = this.token.value;
 			    yychar = -1;
 			    
 			    if (yyerrflag > 0)

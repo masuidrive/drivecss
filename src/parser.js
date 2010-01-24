@@ -4,45 +4,43 @@ YAECSS = YAECSS || {};
 YAECSS.token = {};
 YAECSS.token.YYERRTOK = 256;
 YAECSS.token.UNIMPORTANT_TOK = 257;
-YAECSS.token.S = 258;
-YAECSS.token.CDO = 259;
-YAECSS.token.CDC = 260;
-YAECSS.token.INCLUDES = 261;
-YAECSS.token.DASHMATCH = 262;
-YAECSS.token.BEGINSWITH = 263;
-YAECSS.token.ENDSWITH = 264;
-YAECSS.token.CONTAINS = 265;
-YAECSS.token.MEDIA_NOT = 266;
-YAECSS.token.MEDIA_ONLY = 267;
-YAECSS.token.MEDIA_AND = 268;
-YAECSS.token.STRING = 269;
-YAECSS.token.INVALID = 270;
-YAECSS.token.IDENT = 271;
-YAECSS.token.NTH = 272;
-YAECSS.token.HEX = 273;
-YAECSS.token.IDSEL = 274;
-YAECSS.token.HASH = 275;
-YAECSS.token.SYM = 276;
-YAECSS.token.IMPORTANT_SYM = 277;
-YAECSS.token.EMS = 278;
-YAECSS.token.EXS = 279;
-YAECSS.token.LENGTH = 280;
-YAECSS.token.ANGLE = 281;
-YAECSS.token.TIME = 282;
-YAECSS.token.FREQ = 283;
-YAECSS.token.DIMENSION = 284;
-YAECSS.token.PERCENTAGE = 285;
-YAECSS.token.INTEGER = 286;
-YAECSS.token.FLOATTOKEN = 287;
-YAECSS.token.NOTFUNCTION = 288;
-YAECSS.token.URI = 289;
-YAECSS.token.FUNCTION = 290;
-YAECSS.token.UNICODERANGE = 291;
-YAECSS.token.MEDIAQUERY_END = 292;
-YAECSS.token.ALSO = 293;
+YAECSS.token.CDO = 258;
+YAECSS.token.CDC = 259;
+YAECSS.token.INCLUDES = 260;
+YAECSS.token.DASHMATCH = 261;
+YAECSS.token.BEGINSWITH = 262;
+YAECSS.token.ENDSWITH = 263;
+YAECSS.token.CONTAINS = 264;
+YAECSS.token.MEDIA_NOT = 265;
+YAECSS.token.MEDIA_ONLY = 266;
+YAECSS.token.MEDIA_AND = 267;
+YAECSS.token.STRING = 268;
+YAECSS.token.INVALID = 269;
+YAECSS.token.IDENT = 270;
+YAECSS.token.NTH = 271;
+YAECSS.token.HEX = 272;
+YAECSS.token.IDSEL = 273;
+YAECSS.token.HASH = 274;
+YAECSS.token.SYM = 275;
+YAECSS.token.IMPORTANT_SYM = 276;
+YAECSS.token.EMS = 277;
+YAECSS.token.EXS = 278;
+YAECSS.token.LENGTH = 279;
+YAECSS.token.ANGLE = 280;
+YAECSS.token.TIME = 281;
+YAECSS.token.FREQ = 282;
+YAECSS.token.DIMENSION = 283;
+YAECSS.token.PERCENTAGE = 284;
+YAECSS.token.INTEGER = 285;
+YAECSS.token.FLOATTOKEN = 286;
+YAECSS.token.NOTFUNCTION = 287;
+YAECSS.token.URI = 288;
+YAECSS.token.FUNCTION = 289;
+YAECSS.token.UNICODERANGE = 290;
+YAECSS.token.MEDIAQUERY_END = 291;
+YAECSS.token.ALSO = 292;
 
 YAECSS.CSSParser = function(lexer) {
-    this.yylval = null;
     this.lexer = lexer;
 };
 
@@ -73,15 +71,15 @@ YAECSS.CSSParser = function(lexer) {
 	   44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
 	   44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
 	   44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
-	   44,   44,   44,   44,   44,   44,    1,   44,   44,    2,
-	    3,    4,    5,    6,    7,    8,   44,   44,   44,    9,
-	   44,   10,   44,   11,   12,   13,   14,   15,   16,   17,
-	   18,   19,   20,   21,   44,   22,   23,   44,   24,   25,
-	   26,   44,   44,   44
+	   44,   44,   44,   44,   44,   44,    1,   44,    2,    3,
+	    4,    5,    6,    7,    8,   44,   44,   44,    9,   44,
+	   10,   44,   11,   12,   13,   14,   15,   16,   17,   18,
+	   19,   20,   21,   44,   22,   23,   44,   24,   25,   26,
+	   44,   44,   44
     ];
     
     var YYBADCH = 44;
-    var YYMAXLEX = 294;
+    var YYMAXLEX = 293;
     var YYTERMS = 44;
     var YYNONTERMS = 38;
     
@@ -204,7 +202,7 @@ YAECSS.CSSParser = function(lexer) {
     
     YAECSS.CSSParser.prototype = {
 	/** lexical element object **/
-	yylval: null,
+	token: null,
 	lexer: null,
 
 	parse: function() {
@@ -222,8 +220,15 @@ YAECSS.CSSParser = function(lexer) {
 		    yyn = yydefault[yystate];
 		else {
 		    if (yychar < 0) {
-			if ((yychar = this.lexer.next()) <= 0) yychar = 0;
-			yychar = yychar < YYMAXLEX ? yytranslate[yychar] : YYBADCH;
+		        this.token = this.lexer.next();
+			if (this.token) {
+			    yychar = this.token.id < YYMAXLEX ? yytranslate[this.token.id] : YYBADCH;
+			}
+			else {
+			    yychar = 0;
+			}
+			// if ((yychar = this.lexer.next()) <= 0) yychar = 0;
+			// yychar = yychar < YYMAXLEX ? yytranslate[yychar] : YYBADCH;
 		    }
 		    
 		    if (((yyn = yybase[yystate] + yychar) >= 0
@@ -244,7 +249,7 @@ YAECSS.CSSParser = function(lexer) {
 			    yysp++;
 			    
 			    yysstk[yysp] = yystate = yyn;
-			    yyastk[yysp] = this.lexer.value;
+			    yyastk[yysp] = this.token.value;
 			    yychar = -1;
 			    
 			    if (yyerrflag > 0)

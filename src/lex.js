@@ -23,8 +23,8 @@ YAECSS.CSSLexer = function(source) {
             'hexcolor',   /{h}{3}|{h}{6}/,
             'ident',      /-?{nmstart}{nmchar}*/,
             'name',       /{nmchar}+/,
-	    'num',        /[0-9]+|[0-9]*\.[0-9]+/,
             'intnum',     /[0-9]+/,
+	    'num',        /[0-9]*\.[0-9]+|[0-9]+/,
             'url',        /([!#$%&*-~]|{nonascii}|{escape})*/,
             'w',          /[ \t\r\n\f]*/,
             's',          /[ \t\r\n\f]+/,
@@ -36,7 +36,6 @@ YAECSS.CSSLexer = function(source) {
             'nth',        /(-?[0-9]*n[\+-][0-9]+)|(-?[0-9]*n)/
 	],
 	rules: [
-	    YAECSS.token.S, [/{s}/],
 	    YAECSS.token.CDO, ["<!--"],
 	    YAECSS.token.CDC, ["-->"],
 	    YAECSS.token.INCLUDES, ["~="],
@@ -118,7 +117,6 @@ YAECSS.CSSLexer.prototype = {
     state: 'INITIAL',
     source: null,
     cur: null,
-    value: null,
     next: function() {
 	this.cur = this.cur.replace(/[ \t\r\n\f]+/, '');
 	if(!this.cur) return 0;
@@ -161,12 +159,12 @@ YAECSS.CSSLexer.prototype = {
         if (state != undefined) {
             this.state = state;
         }
-        this.value = tokenBody;
         this.cur = this.cur.substring(length);
         if (token == 0) {
-            return 0;
+            return false;
         }
-        return literal ? tokenBody.charCodeAt(0) : token;
+
+        return({ id:(literal ? tokenBody.charCodeAt(0) : token), value:tokenBody });
     },
     reset: function() {
         this.cur = this.source;

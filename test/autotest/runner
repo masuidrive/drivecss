@@ -2,15 +2,46 @@
 
 require File.join(File.dirname(__FILE__), 'observer')
 
+begin
+require 'rubygems'
+require 'term/ansicolor'
+def print_red(str)
+    print Term::ANSIColor::red, str, Term::ANSIColor::reset
+end
+def print_green(str)
+    print Term::ANSIColor::green, str, Term::ANSIColor::reset
+end
+rescue Exception => e
+def print_red(str)
+    print str 
+end
+def print_green(str)
+    print str 
+end
+end
+
+def unansi_clear
+  print "\e[2J\e[f"
+end
+
 block = lambda do |path, result|
+  unansi_clear
   puts "#{path} updated on #{result}"
   result = `cd \"#{File.join(File.dirname(__FILE__), '..', '..')}\"; make test-all`
   pass = fail = []
   result.each do |line|
-    print line
+    if line.include?('[PASS]')
+      print_green line
+    elsif line.include?('[FAIL]')
+      print_red line
+    else
+      print  line
+    end
   end
 end
 
+unansi_clear
+puts "waiting updated\n"
 observe_manager = Pathname::ObserveManager.new
 observe_manager.add_paths File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'src', '*.js')), &block
 observe_manager.add_paths File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'test', 'unit', '*.js')), &block
