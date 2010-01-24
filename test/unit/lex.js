@@ -62,6 +62,8 @@ test("number", function(){
 });
 
 var units = {
+    'EMS': ['em'],
+    'EXS': ['ex'],
     'LENGTH': ['    px', "\t\tpx", " \n px", 'px', 'cm', 'mm', 'pt', 'pc'],
     'ANGLE': ['deg', 'rad', 'grad'],
     'TIME': ['ms', 's'],
