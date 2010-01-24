@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require File.join(File.dirname(__FILE__), 'observer')
+
+block = lambda do |path, result|
+  puts "#{path} updated on #{result}"
+  result = `cd \"#{File.join(File.dirname(__FILE__), '..', '..')}\"; make test-all`
+  pass = fail = []
+  result.each do |line|
+    print line
+  end
+end
+
+observe_manager = Pathname::ObserveManager.new
+observe_manager.add_paths File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'src', '*.js')), &block
+observe_manager.add_paths File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'test', 'unit', '*.js')), &block
+observe_manager.observe(:mtime)
