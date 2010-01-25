@@ -20,7 +20,7 @@ YAECSS.CSSLexer = function(source) {
             'escape',     /{unicode}|\\[ -~]|\\[^\0-\177]/,
             'nmstart',    /[_a-zA-Z]|{nonascii}|{escape}/,
             'nmchar',     /[_a-zA-Z0-9-]|{nonascii}|{escape}/,
-            'hexcolor',   /{h}{3}|{h}{6}/,
+            'hexcolor',   /{h}{6}|{h}{3}/,
             'ident',      /-?{nmstart}{nmchar}*/,
             'name',       /{nmchar}+/,
             'intnum',     /[0-9]+/,
@@ -57,7 +57,7 @@ YAECSS.CSSLexer = function(source) {
 	    
 	    YAECSS.token.HASH, [/#{hash}/],
 	    
-	    YAECSS.token.SYM, [/@{h}/],
+	    YAECSS.token.SYM, [/@{ident}/, undefined, 'mediaquery'],
 	    
 	    YAECSS.token.IMPORTANT_SYM, [/!({w})*important/],
 	    
@@ -118,7 +118,7 @@ YAECSS.CSSLexer.prototype = {
     source: null,
     cur: null,
     next: function() {
-	this.cur = this.cur.replace(/[ \t\r\n\f]+/, '');
+	this.cur = this.cur.replace(/^[ \t\r\n\f]+/, '');
 	if(!this.cur) return 0;
 	
         var rules = YAECSS.CSSLexer.rules;

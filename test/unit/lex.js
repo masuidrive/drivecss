@@ -28,17 +28,15 @@ function assertTokens(str, tokens, values) {
     label = [];
     for(var i=0; i<tokens.length; ++i) {
 	if(typeof(tokens[i])=="object") {
-	    if(parsed_tokens[i].id!==tokens[i][0] || parsed_tokens[i].value!==tokens[i][1]) matched = false;
-	    label.push(tokens[i][0]+"("+tokens[i][1]+")");
+	    equals(parsed_tokens[i].id, tokens[i][0]);
+	    equals(parsed_tokens[i].value, tokens[i][1]);
 	}
 	else {
 	    tid = tokens[i];
 	    if(typeof(tid)=="string") tid = tid.charCodeAt(0);
-	    if(parsed_tokens[i].id!==tid) matched = false;
-	    label.push(tokens[i]);
+	    equals(parsed_tokens[i].id, tid);
 	}
     }
-    ok( matched, prefix+" tokens "+label );
 }
 
 test("blanks", function(){
@@ -75,13 +73,12 @@ for(var key in units) {
     for(var i in units[key]) {
 	var unit = units[key][i];
 	test('number + "'+unit+'"', (function(key, unit){return(function() {
-	    var unit2 = unit.replace(/[ \t\r\n]+/, '');
-	    assertTokens("1234"+unit, [[YAECSS.token[key], "1234"+unit2]]);
-	    assertTokens("-1234"+unit, ['-', [YAECSS.token[key], "1234"+unit2]]);
-	    assertTokens("+1234"+unit, ['+', [YAECSS.token[key], "1234"+unit2]]);
-	    assertTokens("1234.55"+unit, [[YAECSS.token[key], "1234.55"+unit2]]);
-	    assertTokens("-1234.55"+unit, ['-', [YAECSS.token[key], "1234.55"+unit2]]);
-	    assertTokens("+1234.55"+unit, ['+', [YAECSS.token[key], "1234.55"+unit2]]);
+	    assertTokens("1234"+unit, [[YAECSS.token[key], "1234"+unit]]);
+	    assertTokens("-1234"+unit, ['-', [YAECSS.token[key], "1234"+unit]]);
+	    assertTokens("+1234"+unit, ['+', [YAECSS.token[key], "1234"+unit]]);
+	    assertTokens("1234.55"+unit, [[YAECSS.token[key], "1234.55"+unit]]);
+	    assertTokens("-1234.55"+unit, ['-', [YAECSS.token[key], "1234.55"+unit]]);
+	    assertTokens("+1234.55"+unit, ['+', [YAECSS.token[key], "1234.55"+unit]]);
 	})})(key, unit));
     }
 }
@@ -90,4 +87,32 @@ test("url()", function(){
     assertTokens("url(http://example.com)", [[YAECSS.token.URI, "url(http://example.com)"]]);
     assertTokens("url('http://example.com')", [[YAECSS.token.URI, "url('http://example.com')"]]);
     assertTokens('url("http://example.com")', [[YAECSS.token.URI, 'url("http://example.com")']]);
+});
+
+test("string", function(){
+    assertTokens("'test test'", [[YAECSS.token.STRING, "'test test'"]]);
+    assertTokens("\"test test\"", [[YAECSS.token.STRING, "\"test test\""]]);
+    assertTokens("\"test ' test\"", [[YAECSS.token.STRING, "\"test ' test\""]]);
+    assertTokens("'test \" test'", [[YAECSS.token.STRING, "'test \" test'"]]);
+    assertTokens("'test \\\n test'", [[YAECSS.token.STRING, "'test \\\n test'"]]);
+    assertTokens("'ユニコード'", [[YAECSS.token.STRING, "'ユニコード'"]]);
+});
+
+test("not() or not", function(){
+    assertTokens("not()", [YAECSS.token.NOTFUNCTION, ')']);
+    assertTokens("not(ident)", [YAECSS.token.NOTFUNCTION, [YAECSS.token.IDENT, "ident"], ')']);
+    assertTokens("@media not;", [YAECSS.token.SYM, YAECSS.token.MEDIA_NOT, ';']);
+    assertTokens("not", [YAECSS.token.IDENT]);
+    assertTokens("a { not }", [[YAECSS.token.IDENT, 'a'], '{', [YAECSS.token.IDENT, 'not'], '}']);
+});
+
+test("id and hex", function(){
+    assertTokens("#aaa", [[YAECSS.token.HEX, '#aaa']]);
+    assertTokens("#aaaa", [[YAECSS.token.IDSEL, '#aaaa']]);
+    assertTokens("#aaaaaa", [[YAECSS.token.HEX, '#aaaaaa']]);
+    assertTokens("#BBBBBB", [[YAECSS.token.HEX, '#BBBBBB']]);
+    assertTokens("#zzz", [[YAECSS.token.IDSEL, '#zzz']]);
+    assertTokens("#test", [[YAECSS.token.IDSEL, '#test']]);
+    assertTokens("#foo-bar", [[YAECSS.token.IDSEL, '#foo-bar']]);
+    assertTokens("#-foo-bar", [[YAECSS.token.IDSEL, '#-foo-bar']]);
 });
