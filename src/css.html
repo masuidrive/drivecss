@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>YAECSS converter</title>
+<title>DriveCSS converter</title>
 <script type="text/javascript" src="parser.js"></script>
 <script type="text/javascript" src="lex.js"></script>
 <script type="text/javascript">
@@ -8,8 +8,8 @@
 var lex;
 function main() {
     buffer = document.compiledtext.source.value;
-    lex = new YAECSS.CSSLexer(buffer);
-    parser = new YAECSS.CSSParser(lex);
+    lex = new DriveCSS.CSSLexer(buffer);
+    parser = new DriveCSS.CSSParser(lex);
     parser.parse();
     return false;
 }

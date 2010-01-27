@@ -1,12 +1,12 @@
 /* Lexical analyzer
 
-   Originai is below address
+   Originai is 
    http://translate.google.com/translate?u=http%3A%2F%2Fd.hatena.ne.jp%2Famachang%2F20080502%2F1209732467&sl=ja
 */
-var YAECSS;
-YAECSS = YAECSS || {};
+var DriveCSS;
+DriveCSS = DriveCSS || {};
 
-YAECSS.CSSLexer = function(source) {
+DriveCSS.CSSLexer = function(source) {
     this.source = source;
     this.reset();
 };
@@ -36,50 +36,50 @@ YAECSS.CSSLexer = function(source) {
             'nth',        /(-?[0-9]*n[\+-][0-9]+)|(-?[0-9]*n)/
 	],
 	rules: [
-	    YAECSS.token.CDO, ["<!--"],
-	    YAECSS.token.CDC, ["-->"],
-	    YAECSS.token.INCLUDES, ["~="],
-	    YAECSS.token.DASHMATCH, ["!="],
-            YAECSS.token.BEGINSWITH, ["^="],
-            YAECSS.token.ENDSWITH, ["$="],
-            YAECSS.token.CONTAINS, ["*="],
-            YAECSS.token.MEDIA_NOT, ["not", 'mediaquery'],
-            YAECSS.token.MEDIA_ONLY, ["only", 'mediaquery'],
-            YAECSS.token.MEDIA_AND, ["and", 'mediaquery'],
+	    DriveCSS.token.CDO, ["<!--"],
+	    DriveCSS.token.CDC, ["-->"],
+	    DriveCSS.token.INCLUDES, ["~="],
+	    DriveCSS.token.DASHMATCH, ["!="],
+            DriveCSS.token.BEGINSWITH, ["^="],
+            DriveCSS.token.ENDSWITH, ["$="],
+            DriveCSS.token.CONTAINS, ["*="],
+            DriveCSS.token.MEDIA_NOT, ["not", 'mediaquery'],
+            DriveCSS.token.MEDIA_ONLY, ["only", 'mediaquery'],
+            DriveCSS.token.MEDIA_AND, ["and", 'mediaquery'],
 	    
-	    YAECSS.token.STRING, [/{string}/],
-	    YAECSS.token.INVALID, [/{invalid}/],
+	    DriveCSS.token.STRING, [/{string}/],
+	    DriveCSS.token.INVALID, [/{invalid}/],
 	    
-	    YAECSS.token.IDENT, [/{ident}/],
-            YAECSS.token.NTH, [/{nth}/],
-            YAECSS.token.HEX, [/#{hexcolor}/],
-            YAECSS.token.IDSEL, [/#{ident}/],
+	    DriveCSS.token.IDENT, [/{ident}/],
+            DriveCSS.token.NTH, [/{nth}/],
+            DriveCSS.token.HEX, [/#{hexcolor}/],
+            DriveCSS.token.IDSEL, [/#{ident}/],
 	    
-	    YAECSS.token.HASH, [/#{hash}/],
+	    DriveCSS.token.HASH, [/#{hash}/],
 	    
-	    YAECSS.token.SYM, [/@{ident}/, undefined, 'mediaquery'],
+	    DriveCSS.token.SYM, [/@{ident}/, undefined, 'mediaquery'],
 	    
-	    YAECSS.token.IMPORTANT_SYM, [/!({w})*important/],
+	    DriveCSS.token.IMPORTANT_SYM, [/!({w})*important/],
 	    
-            YAECSS.token.EMS, [/{num}{w}em/],
-            YAECSS.token.EXS, [/{num}{w}ex/],
-            YAECSS.token.LENGTH, [/{num}{w}(px|cm|mm|pt|pc)/],
-            YAECSS.token.ANGLE, [/{num}{w}(deg|rad|grad)/],
-            YAECSS.token.TIME, [/{num}{w}(ms|s)/],
-            YAECSS.token.FREQ, [/{num}{w}(hz|khz)/],
-            YAECSS.token.DIMENSION, [/{num}{w}{ident}/],
-	    YAECSS.token.PERCENTAGE, [/{num}{w}%+/],
-            YAECSS.token.INTEGER, [/{intnum}/],
-            YAECSS.token.FLOATTOKEN, [/{num}/],
+            DriveCSS.token.EMS, [/{num}{w}em/],
+            DriveCSS.token.EXS, [/{num}{w}ex/],
+            DriveCSS.token.LENGTH, [/{num}{w}(px|cm|mm|pt|pc)/],
+            DriveCSS.token.ANGLE, [/{num}{w}(deg|rad|grad)/],
+            DriveCSS.token.TIME, [/{num}{w}(ms|s)/],
+            DriveCSS.token.FREQ, [/{num}{w}(hz|khz)/],
+            DriveCSS.token.DIMENSION, [/{num}{w}{ident}/],
+	    DriveCSS.token.PERCENTAGE, [/{num}{w}%+/],
+            DriveCSS.token.INTEGER, [/{intnum}/],
+            DriveCSS.token.FLOATTOKEN, [/{num}/],
 
-            YAECSS.token.NOTFUNCTION, ["not("],
-	    YAECSS.token.URI, [/(?:url\({w}{string}{w}\))|(?:url\({w}{url}{w}\))/],
-            YAECSS.token.FUNCTION, [/{ident}{w}\(/],
-            YAECSS.token.UNICODERANGE, [/(?:U\+{range})|(?:U\+{h}{1,6}-{h}{1,6})/],
+            DriveCSS.token.NOTFUNCTION, ["not("],
+	    DriveCSS.token.URI, [/(?:url\({w}{string}{w}\))|(?:url\({w}{url}{w}\))/],
+            DriveCSS.token.FUNCTION, [/{ident}{w}\(/],
+            DriveCSS.token.UNICODERANGE, [/(?:U\+{range})|(?:U\+{h}{1,6}-{h}{1,6})/],
 	    
-            YAECSS.token.MEDIAQUERY_END, [/{|;/, 'mediaquery', 'INITIAL', true],
+            DriveCSS.token.MEDIAQUERY_END, [/{|;/, 'mediaquery', 'INITIAL', true],
             
-            YAECSS.token.ALSO, [/./, undefined, undefined, true]
+            DriveCSS.token.ALSO, [/./, undefined, undefined, true]
 	]
     };
     
@@ -109,11 +109,11 @@ YAECSS.CSSLexer = function(source) {
         }
     }
 
-    YAECSS.CSSLexer.rules = rules;
+    DriveCSS.CSSLexer.rules = rules;
 })();
 
 
-YAECSS.CSSLexer.prototype = {
+DriveCSS.CSSLexer.prototype = {
     state: 'INITIAL',
     source: null,
     cur: null,
@@ -121,7 +121,7 @@ YAECSS.CSSLexer.prototype = {
 	this.cur = this.cur.replace(/^[ \t\r\n\f]+/, '');
 	if(!this.cur) return 0;
 	
-        var rules = YAECSS.CSSLexer.rules;
+        var rules = DriveCSS.CSSLexer.rules;
         var m, matches = [];
         for (var i = 0; i < rules.length; i += 2) {
             var n = rules[i];
@@ -169,6 +169,6 @@ YAECSS.CSSLexer.prototype = {
     reset: function() {
         this.cur = this.source;
     },
-    constructor: YAECSS.CSSLexer
+    constructor: DriveCSS.CSSLexer
 };
 

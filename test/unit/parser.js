@@ -1,6 +1,6 @@
 module("parser");
 
 test('CSSParser', function() {
-    equals(typeof(YAECSS), "object", "Exists YAECSS namescape");
-    equals(typeof(YAECSS.CSSParser), "function", "Exists YAECSS.CSSParser class");
+    equals(typeof(DriveCSS), "object", "Exists DriveCSS namescape");
+    equals(typeof(DriveCSS.CSSParser), "function", "Exists DriveCSS.CSSParser class");
 });

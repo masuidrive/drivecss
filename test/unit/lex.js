@@ -1,12 +1,12 @@
 module("lex");
 
 test('CSSLexer', function() {
-    equals(typeof(YAECSS), "object", "Exists YAECSS namescape");
-    equals(typeof(YAECSS.CSSLexer), "function", "Exists YAECSS.CSSLexer class");
+    equals(typeof(DriveCSS), "object", "Exists DriveCSS namescape");
+    equals(typeof(DriveCSS.CSSLexer), "function", "Exists DriveCSS.CSSLexer class");
 });
 
 function parse(str) {
-    lexer = new YAECSS.CSSLexer(str);
+    lexer = new DriveCSS.CSSLexer(str);
     tokens = [];
     while(token = lexer.next()) {
 	tokens.push(token);
@@ -46,17 +46,17 @@ test("blanks", function(){
 });
 
 test("xml comment", function(){
-    assertTokens("<!-- -->", [YAECSS.token.CDO, YAECSS.token.CDC]);
-    assertTokens(" <!-- -->  ", [YAECSS.token.CDO, YAECSS.token.CDC]);
+    assertTokens("<!-- -->", [DriveCSS.token.CDO, DriveCSS.token.CDC]);
+    assertTokens(" <!-- -->  ", [DriveCSS.token.CDO, DriveCSS.token.CDC]);
 });
 
 test("number", function(){
-    assertTokens("1234", [[YAECSS.token.INTEGER, "1234"]]);
-    assertTokens("-1234", ['-', [YAECSS.token.INTEGER, "1234"]]);
-    assertTokens("+1234", ['+', [YAECSS.token.INTEGER, "1234"]]);
-    assertTokens("1234.55", [[YAECSS.token.FLOATTOKEN, "1234.55"]]);
-    assertTokens("-1234.55", ['-', [YAECSS.token.FLOATTOKEN, "1234.55"]]);
-    assertTokens("+1234.55", ['+', [YAECSS.token.FLOATTOKEN, "1234.55"]]);
+    assertTokens("1234", [[DriveCSS.token.INTEGER, "1234"]]);
+    assertTokens("-1234", ['-', [DriveCSS.token.INTEGER, "1234"]]);
+    assertTokens("+1234", ['+', [DriveCSS.token.INTEGER, "1234"]]);
+    assertTokens("1234.55", [[DriveCSS.token.FLOATTOKEN, "1234.55"]]);
+    assertTokens("-1234.55", ['-', [DriveCSS.token.FLOATTOKEN, "1234.55"]]);
+    assertTokens("+1234.55", ['+', [DriveCSS.token.FLOATTOKEN, "1234.55"]]);
 });
 
 var units = {
@@ -73,46 +73,46 @@ for(var key in units) {
     for(var i in units[key]) {
 	var unit = units[key][i];
 	test('number + "'+unit+'"', (function(key, unit){return(function() {
-	    assertTokens("1234"+unit, [[YAECSS.token[key], "1234"+unit]]);
-	    assertTokens("-1234"+unit, ['-', [YAECSS.token[key], "1234"+unit]]);
-	    assertTokens("+1234"+unit, ['+', [YAECSS.token[key], "1234"+unit]]);
-	    assertTokens("1234.55"+unit, [[YAECSS.token[key], "1234.55"+unit]]);
-	    assertTokens("-1234.55"+unit, ['-', [YAECSS.token[key], "1234.55"+unit]]);
-	    assertTokens("+1234.55"+unit, ['+', [YAECSS.token[key], "1234.55"+unit]]);
+	    assertTokens("1234"+unit, [[DriveCSS.token[key], "1234"+unit]]);
+	    assertTokens("-1234"+unit, ['-', [DriveCSS.token[key], "1234"+unit]]);
+	    assertTokens("+1234"+unit, ['+', [DriveCSS.token[key], "1234"+unit]]);
+	    assertTokens("1234.55"+unit, [[DriveCSS.token[key], "1234.55"+unit]]);
+	    assertTokens("-1234.55"+unit, ['-', [DriveCSS.token[key], "1234.55"+unit]]);
+	    assertTokens("+1234.55"+unit, ['+', [DriveCSS.token[key], "1234.55"+unit]]);
 	})})(key, unit));
     }
 }
 
 test("url()", function(){
-    assertTokens("url(http://example.com)", [[YAECSS.token.URI, "url(http://example.com)"]]);
-    assertTokens("url('http://example.com')", [[YAECSS.token.URI, "url('http://example.com')"]]);
-    assertTokens('url("http://example.com")', [[YAECSS.token.URI, 'url("http://example.com")']]);
+    assertTokens("url(http://example.com)", [[DriveCSS.token.URI, "url(http://example.com)"]]);
+    assertTokens("url('http://example.com')", [[DriveCSS.token.URI, "url('http://example.com')"]]);
+    assertTokens('url("http://example.com")', [[DriveCSS.token.URI, 'url("http://example.com")']]);
 });
 
 test("string", function(){
-    assertTokens("'test test'", [[YAECSS.token.STRING, "'test test'"]]);
-    assertTokens("\"test test\"", [[YAECSS.token.STRING, "\"test test\""]]);
-    assertTokens("\"test ' test\"", [[YAECSS.token.STRING, "\"test ' test\""]]);
-    assertTokens("'test \" test'", [[YAECSS.token.STRING, "'test \" test'"]]);
-    assertTokens("'test \\\n test'", [[YAECSS.token.STRING, "'test \\\n test'"]]);
-    assertTokens("'ユニコード'", [[YAECSS.token.STRING, "'ユニコード'"]]);
+    assertTokens("'test test'", [[DriveCSS.token.STRING, "'test test'"]]);
+    assertTokens("\"test test\"", [[DriveCSS.token.STRING, "\"test test\""]]);
+    assertTokens("\"test ' test\"", [[DriveCSS.token.STRING, "\"test ' test\""]]);
+    assertTokens("'test \" test'", [[DriveCSS.token.STRING, "'test \" test'"]]);
+    assertTokens("'test \\\n test'", [[DriveCSS.token.STRING, "'test \\\n test'"]]);
+    assertTokens("'ユニコード'", [[DriveCSS.token.STRING, "'ユニコード'"]]);
 });
 
 test("not() or not", function(){
-    assertTokens("not()", [YAECSS.token.NOTFUNCTION, ')']);
-    assertTokens("not(ident)", [YAECSS.token.NOTFUNCTION, [YAECSS.token.IDENT, "ident"], ')']);
-    assertTokens("@media not;", [YAECSS.token.SYM, YAECSS.token.MEDIA_NOT, ';']);
-    assertTokens("not", [YAECSS.token.IDENT]);
-    assertTokens("a { not }", [[YAECSS.token.IDENT, 'a'], '{', [YAECSS.token.IDENT, 'not'], '}']);
+    assertTokens("not()", [DriveCSS.token.NOTFUNCTION, ')']);
+    assertTokens("not(ident)", [DriveCSS.token.NOTFUNCTION, [DriveCSS.token.IDENT, "ident"], ')']);
+    assertTokens("@media not;", [DriveCSS.token.SYM, DriveCSS.token.MEDIA_NOT, ';']);
+    assertTokens("not", [DriveCSS.token.IDENT]);
+    assertTokens("a { not }", [[DriveCSS.token.IDENT, 'a'], '{', [DriveCSS.token.IDENT, 'not'], '}']);
 });
 
 test("id and hex", function(){
-    assertTokens("#aaa", [[YAECSS.token.HEX, '#aaa']]);
-    assertTokens("#aaaa", [[YAECSS.token.IDSEL, '#aaaa']]);
-    assertTokens("#aaaaaa", [[YAECSS.token.HEX, '#aaaaaa']]);
-    assertTokens("#BBBBBB", [[YAECSS.token.HEX, '#BBBBBB']]);
-    assertTokens("#zzz", [[YAECSS.token.IDSEL, '#zzz']]);
-    assertTokens("#test", [[YAECSS.token.IDSEL, '#test']]);
-    assertTokens("#foo-bar", [[YAECSS.token.IDSEL, '#foo-bar']]);
-    assertTokens("#-foo-bar", [[YAECSS.token.IDSEL, '#-foo-bar']]);
+    assertTokens("#aaa", [[DriveCSS.token.HEX, '#aaa']]);
+    assertTokens("#aaaa", [[DriveCSS.token.IDSEL, '#aaaa']]);
+    assertTokens("#aaaaaa", [[DriveCSS.token.HEX, '#aaaaaa']]);
+    assertTokens("#BBBBBB", [[DriveCSS.token.HEX, '#BBBBBB']]);
+    assertTokens("#zzz", [[DriveCSS.token.IDSEL, '#zzz']]);
+    assertTokens("#test", [[DriveCSS.token.IDSEL, '#test']]);
+    assertTokens("#foo-bar", [[DriveCSS.token.IDSEL, '#foo-bar']]);
+    assertTokens("#-foo-bar", [[DriveCSS.token.IDSEL, '#-foo-bar']]);
 });
