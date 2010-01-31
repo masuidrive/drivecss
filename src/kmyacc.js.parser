@@ -4,14 +4,14 @@ $semval(%n) yyastk[yysp-(%l-%n)]
 $semval(%n,%t) yyastk[yysp-(%l-%n)]
 $include;
 
-var YAECSS;
-YAECSS = YAECSS || {};
-YAECSS.token = {};
+var DriveCSS;
+DriveCSS = DriveCSS || {};
+DriveCSS.token = {};
 $tokenval
-YAECSS.token.%s = %n;
+DriveCSS.token.%s = %n;
 $endtokenval
 
-YAECSS.CSSParser = function(lexer) {
+DriveCSS.CSSParser = function(lexer) {
     this.lexer = lexer;
 };
 
@@ -77,7 +77,7 @@ YAECSS.CSSParser = function(lexer) {
     var YYUNEXPECTED = $(YYUNEXPECTED);
     var YYDEFAULT = $(YYDEFAULT);
     
-    YAECSS.CSSParser.prototype = {
+    DriveCSS.CSSParser.prototype = {
 	/** lexical element object **/
 	token: null,
 	lexer: null,
