@@ -106,6 +106,13 @@ test("not() or not", function(){
     assertTokens("a { not }", [[DriveCSS.token.IDENT, 'a'], '{', [DriveCSS.token.IDENT, 'not'], '}']);
 });
 
+test("}", function(){
+    assertTokens("}", ['}']);
+    assertTokens("{ }", ['{', '}']);
+    assertTokens("{ } }", ['{', '}', '}']);
+    assertTokens("@media { }", [DriveCSS.token.SYM, '{', DriveCSS.token.MEDIAQUERY_END]);
+});
+
 test("id and hex", function(){
     assertTokens("#aaa", [[DriveCSS.token.HEX, '#aaa']]);
     assertTokens("#aaaa", [[DriveCSS.token.IDSEL, '#aaaa']]);
@@ -116,3 +123,4 @@ test("id and hex", function(){
     assertTokens("#foo-bar", [[DriveCSS.token.IDSEL, '#foo-bar']]);
     assertTokens("#-foo-bar", [[DriveCSS.token.IDSEL, '#-foo-bar']]);
 });
+
