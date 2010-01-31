@@ -41,13 +41,15 @@ function assertTokens(str, tokens, values) {
 
 test("blanks", function(){
     assertTokens("", []);
-    assertTokens(" ", []);
-    assertTokens("\n", []);
+    assertTokens(" ", [DriveCSS.token.WHITESPACE]);
+    assertTokens("\t", [DriveCSS.token.WHITESPACE]);
+    assertTokens("\r", [DriveCSS.token.WHITESPACE]);
+    assertTokens("\n", [DriveCSS.token.WHITESPACE]);
+    assertTokens("\f", [DriveCSS.token.WHITESPACE]);
 });
 
 test("xml comment", function(){
-    assertTokens("<!-- -->", [DriveCSS.token.CDO, DriveCSS.token.CDC]);
-    assertTokens(" <!-- -->  ", [DriveCSS.token.CDO, DriveCSS.token.CDC]);
+    assertTokens("<!-- -->", [DriveCSS.token.CDO, DriveCSS.token.WHITESPACE, DriveCSS.token.CDC]);
 });
 
 test("number", function(){
@@ -111,20 +113,20 @@ test("string", function(){
 test("not() or not", function(){
     assertTokens("not()", [DriveCSS.token.NOTFUNCTION, ')']);
     assertTokens("not (ident)", [DriveCSS.token.NOTFUNCTION, [DriveCSS.token.IDENT, "ident"], ')']);
-    assertTokens("@media not; not", [DriveCSS.token.SYM, DriveCSS.token.QUERY_NOT, ';', [DriveCSS.token.IDENT, "not"]]);
-    assertTokens("@media not { not", [DriveCSS.token.SYM, DriveCSS.token.QUERY_NOT, '{', [DriveCSS.token.IDENT, "not"]]);
+    assertTokens("@media not; not", [DriveCSS.token.SYM, DriveCSS.token.WHITESPACE, DriveCSS.token.QUERY_NOT, ';', DriveCSS.token.WHITESPACE, [DriveCSS.token.IDENT, "not"]]);
+    assertTokens("@media not { not", [DriveCSS.token.SYM, DriveCSS.token.WHITESPACE, DriveCSS.token.QUERY_NOT, DriveCSS.token.WHITESPACE, '{', DriveCSS.token.WHITESPACE, [DriveCSS.token.IDENT, "not"]]);
     assertTokens("not", [DriveCSS.token.IDENT]);
-    assertTokens("a { not }", [[DriveCSS.token.IDENT, 'a'], '{', [DriveCSS.token.IDENT, 'not'], '}']);
+    assertTokens("a { not }", [[DriveCSS.token.IDENT, 'a'], DriveCSS.token.WHITESPACE, '{', DriveCSS.token.WHITESPACE, [DriveCSS.token.IDENT, 'not'], DriveCSS.token.WHITESPACE, '}']);
 });
 
 test("@sym query", function(){
     assertTokens("}", ['}']);
-    assertTokens("{ }", ['{', '}']);
-    assertTokens("token { }", [[DriveCSS.token.IDENT,'token'], '{', '}']);
-    assertTokens("@media screen {", [DriveCSS.token.SYM, [DriveCSS.token.IDENT, 'screen'],'{']);
-    assertTokens("@media not { not", [DriveCSS.token.SYM, DriveCSS.token.QUERY_NOT, '{', [DriveCSS.token.IDENT, 'not']]);
-    assertTokens("@media only { only", [DriveCSS.token.SYM, DriveCSS.token.QUERY_ONLY, '{', [DriveCSS.token.IDENT, 'only']]);
-    assertTokens("@media and { and", [DriveCSS.token.SYM, DriveCSS.token.QUERY_AND, '{', [DriveCSS.token.IDENT, 'and']]);
+    assertTokens("{ }", ['{', DriveCSS.token.WHITESPACE, '}']);
+    assertTokens("token { }", [[DriveCSS.token.IDENT,'token'], DriveCSS.token.WHITESPACE, '{', DriveCSS.token.WHITESPACE, '}']);
+    assertTokens("@media screen {", [DriveCSS.token.SYM, DriveCSS.token.WHITESPACE, [DriveCSS.token.IDENT, 'screen'],DriveCSS.token.WHITESPACE, '{']);
+    assertTokens("@media not { not", [DriveCSS.token.SYM, DriveCSS.token.WHITESPACE, DriveCSS.token.QUERY_NOT, DriveCSS.token.WHITESPACE, '{', DriveCSS.token.WHITESPACE, [DriveCSS.token.IDENT, 'not']]);
+    assertTokens("@media only { only", [DriveCSS.token.SYM, DriveCSS.token.WHITESPACE, DriveCSS.token.QUERY_ONLY, DriveCSS.token.WHITESPACE, '{', DriveCSS.token.WHITESPACE, [DriveCSS.token.IDENT, 'only']]);
+    assertTokens("@media and { and", [DriveCSS.token.SYM, DriveCSS.token.WHITESPACE, DriveCSS.token.QUERY_AND, DriveCSS.token.WHITESPACE, '{', DriveCSS.token.WHITESPACE, [DriveCSS.token.IDENT, 'and']]);
 });
 
 test("id and hex", function(){

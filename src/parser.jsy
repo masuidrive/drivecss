@@ -3,7 +3,7 @@
    Yuichiro MASUI a.k.a. masuidrive <masui@masuidrive.jp>
    http://github.com/masuidrive/drivecss/
 */
-%token UNIMPORTANT_TOK
+%token UNIMPORTANT_TOK WHITESPACE
 %token CDO CDC INCLUDES DASHMATCH BEGINSWITH ENDSWITH CONTAINS QUERY_NOT QUERY_ONLY QUERY_AND
 %token STRING IDENT NTH HEX IDSEL SYM IMPORTANT_SYM
 %token EMS EXS LENGTH ANGLE TIME FREQ DIMENSION PERCENTAGE INTEGER FLOATTOKEN
@@ -14,7 +14,7 @@
 %left '*' '/'
 %left '|'
 %right IDENT
-%nonassoc HEX IDSEL ':' '.' '[' '*'
+%nonassoc HEX IDSEL ':' '.' '[' '*' WHITESPACE
 
 
 %%
@@ -48,6 +48,9 @@ sym	: SYM expr ';' { $$ = new DriveCSS.Node("symbol", $1, $2); }
 
 keyframe_name
 	: IDENT
+	| QUERY_NOT
+	| QUERY_ONLY
+	| QUERY_AND
     	| STRING
     	;
 
@@ -70,7 +73,7 @@ key	: PERCENTAGE
 	;
 
 ruleset
-	: selector_list '{' declaration_list '}' { $$ = new DriveCSS.Node('selector', $1, $3); }
+	: selector_list '{' declaration_list '}' { $$ = new DriveCSS.Node('ruleset', $1, $3); }
 	;
 
 
@@ -82,6 +85,12 @@ selector_list
 selector
 	: simple_selector { $$ = $1; }
 	| selector combinator simple_selector { $$ = $1 + " " + $2 + " " + $3; }
+	;
+
+combinator
+	: '+'
+	| '~'
+	| '>'
 	;
 
 simple_selector
@@ -185,12 +194,6 @@ unary_operator
 	| '+'
         ;
 
-combinator
-	: '+'
-	| '~'
-	| '>'
-	;
-
 expr	: term	{ $$ = new DriveCSS.Node('expr', $1); }
 	| expr operator term { $$ = $2 ? new DriveCSS.Node($2, $1, $3) : $1.add($3); }
   	;
@@ -225,7 +228,12 @@ term	: INTEGER               { $$ = new DriveCSS.Node("number", parseInt($1)); }
 	| IDENT                 { $$ = new DriveCSS.Node("ident", $1); }
 	| URI                   { $$ = new DriveCSS.Node("uri", $1); }
 	| hexcolor              { $$ = new DriveCSS.Node("hexcolor", $1); }
-	| function              { $$ = $1.replace(/\(/,""); }
+	| function              { $$ = new DriveCSS.Node("function", $1); }
+	;
+
+maybe_space
+	: /* empty */
+	| WHITESPACE
 	;
 
 %%

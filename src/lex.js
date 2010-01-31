@@ -39,6 +39,7 @@ DriveCSS.CSSLexer = function(source) {
             'nth',        /(-?[0-9]*[Nn][\+-]+[0-9]+)|(-?[0-9]*[Nn])/
 	],
 	rules: [
+	    DriveCSS.token.WHITESPACE, [/{s}/],
 	    DriveCSS.token.CDO, ["<!--"],
 	    DriveCSS.token.CDC, ["-->"],
 	    DriveCSS.token.INCLUDES, ["~="],
@@ -118,7 +119,6 @@ DriveCSS.CSSLexer.prototype = {
     source: null,
     cur: "",
     next: function() {
-	this.cur = this.cur.replace(/^[ \t\r\n\f]+/, '');
 	if(!this.cur) return 0;
 	
         var rules = DriveCSS.CSSLexer.rules;
