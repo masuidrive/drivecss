@@ -32,8 +32,8 @@ DriveCSS.CSSLexer = function(source) {
             'string1',    /\"([\t !#$%&(-~]|\\{nl}|\'|{nonascii}|{escape})*\"/,
             'string2',    /\'([\t !#$%&(-~]|\\{nl}|\"|{nonascii}|{escape})*\'/,
             'string',     /{string1}|{string2}/,
-            'range',      /\?{1,6}|{h}(\?{0,5}|{h}(\?{0,4}|{h}(\?{0,3}|{h}(\?{0,2}|{h}(\??|{h})))))/,
-            'nth',        /(-?[0-9]*n[\+-][0-9]+)|(-?[0-9]*n)/
+            'range',      /[0-9a-fA-F\?]{1,6}/,
+            'nth',        /(-?[0-9]*n[\+-]+[0-9]+)|(-?[0-9]*n)/
 	],
 	rules: [
 	    DriveCSS.token.CDO, ["<!--"],
@@ -43,12 +43,12 @@ DriveCSS.CSSLexer = function(source) {
             DriveCSS.token.BEGINSWITH, ["^="],
             DriveCSS.token.ENDSWITH, ["$="],
             DriveCSS.token.CONTAINS, ["*="],
-            DriveCSS.token.MEDIA_NOT, ["not", 'mediaquery'],
-            DriveCSS.token.MEDIA_ONLY, ["only", 'mediaquery'],
-            DriveCSS.token.MEDIA_AND, ["and", 'mediaquery'],
-	    
+            DriveCSS.token.QUERY_NOT, ["not", 'query'],
+            DriveCSS.token.QUERY_ONLY, ["only", 'query'],
+            DriveCSS.token.QUERY_AND, ["and", 'query'],
+            DriveCSS.token.QUERY_END, [/({|;)/, 'query', 'INITIAL', true],
+            
 	    DriveCSS.token.STRING, [/{string}/],
-	    DriveCSS.token.INVALID, [/{invalid}/],
 	    
 	    DriveCSS.token.IDENT, [/{ident}/],
             DriveCSS.token.NTH, [/{nth}/],
@@ -57,10 +57,9 @@ DriveCSS.CSSLexer = function(source) {
 	    
 	    DriveCSS.token.HASH, [/#{hash}/],
 	    
-	    DriveCSS.token.SYM, [/@{ident}/, undefined, 'mediaquery'],
-	    
 	    DriveCSS.token.IMPORTANT_SYM, [/!({w})*important/],
 	    
+	    DriveCSS.token.SYM, [/@{ident}/, undefined, 'query'],
             DriveCSS.token.EMS, [/{num}{w}em/],
             DriveCSS.token.EXS, [/{num}{w}ex/],
             DriveCSS.token.LENGTH, [/{num}{w}(px|cm|mm|pt|pc)/],
@@ -71,14 +70,12 @@ DriveCSS.CSSLexer = function(source) {
 	    DriveCSS.token.PERCENTAGE, [/{num}{w}%+/],
             DriveCSS.token.INTEGER, [/{intnum}/],
             DriveCSS.token.FLOATTOKEN, [/{num}/],
-
+            
             DriveCSS.token.NOTFUNCTION, ["not("],
 	    DriveCSS.token.URI, [/(?:url\({w}{string}{w}\))|(?:url\({w}{url}{w}\))/],
             DriveCSS.token.FUNCTION, [/{ident}{w}\(/],
-            DriveCSS.token.UNICODERANGE, [/(?:U\+{range})|(?:U\+{h}{1,6}-{h}{1,6})/],
+            DriveCSS.token.UNICODERANGE, [/(?:U\+{h}{1,6}-{h}{1,6})|(?:U\+{range})/],
 	    
-            DriveCSS.token.MEDIAQUERY_END, [/{|;/, 'mediaquery', 'INITIAL', true],
-            
             DriveCSS.token.ALSO, [/./, undefined, undefined, true]
 	]
     };
@@ -116,7 +113,7 @@ DriveCSS.CSSLexer = function(source) {
 DriveCSS.CSSLexer.prototype = {
     state: 'INITIAL',
     source: null,
-    cur: null,
+    cur: "",
     next: function() {
 	this.cur = this.cur.replace(/^[ \t\r\n\f]+/, '');
 	if(!this.cur) return 0;

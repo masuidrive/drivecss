@@ -1,6 +1,7 @@
 <html>
 <head>
 <title>DriveCSS converter</title>
+<script type="text/javascript" src="node.js"></script>
 <script type="text/javascript" src="parser.js"></script>
 <script type="text/javascript" src="lex.js"></script>
 <script type="text/javascript">
@@ -11,6 +12,7 @@ function main() {
     lex = new DriveCSS.CSSLexer(buffer);
     parser = new DriveCSS.CSSParser(lex);
     parser.parse();
+    document.getElementById("result").innerHTML = parser.tree[0].toHTML();
     return false;
 }
 
@@ -21,7 +23,7 @@ Enter expression to compute:
 <form name="compiledtext" id="compiledtext" onsubmit="return main()">
    <textarea type="text" name="source" cols="100" rows="10"></textarea><br/>
    <input name="answer" type="button" value="Translate" onclick="main()"><br/><br/>
-   <textarea type="text" name="result" cols="100" rows="10"></textarea><br/>
+   <ul id="result"></ul>
 </form>
 </body>
 </html>
