@@ -109,7 +109,7 @@ test("string", function(){
 
 test("not() or not", function(){
     assertTokens("not()", [DriveCSS.token.NOTFUNCTION, ')']);
-    assertTokens("not(ident)", [DriveCSS.token.NOTFUNCTION, [DriveCSS.token.IDENT, "ident"], ')']);
+    assertTokens("not (ident)", [DriveCSS.token.NOTFUNCTION, [DriveCSS.token.IDENT, "ident"], ')']);
     assertTokens("@media not; not", [DriveCSS.token.SYM, DriveCSS.token.QUERY_NOT, ';', [DriveCSS.token.IDENT, "not"]]);
     assertTokens("@media not { not", [DriveCSS.token.SYM, DriveCSS.token.QUERY_NOT, '{', [DriveCSS.token.IDENT, "not"]]);
     assertTokens("not", [DriveCSS.token.IDENT]);

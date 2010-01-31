@@ -33,7 +33,7 @@ DriveCSS.CSSLexer = function(source) {
             'string2',    /\'([\t !#$%&(-~]|\\{nl}|\"|{nonascii}|{escape})*\'/,
             'string',     /{string1}|{string2}/,
             'range',      /[0-9a-fA-F\?]{1,6}/,
-            'nth',        /(-?[0-9]*n[\+-]+[0-9]+)|(-?[0-9]*n)/
+            'nth',        /(-?[0-9]*[Nn][\+-]+[0-9]+)|(-?[0-9]*[Nn])/
 	],
 	rules: [
 	    DriveCSS.token.CDO, ["<!--"],
@@ -71,10 +71,10 @@ DriveCSS.CSSLexer = function(source) {
             DriveCSS.token.INTEGER, [/{intnum}/],
             DriveCSS.token.FLOATTOKEN, [/{num}/],
             
-            DriveCSS.token.NOTFUNCTION, ["not("],
-	    DriveCSS.token.URI, [/(?:url\({w}{string}{w}\))|(?:url\({w}{url}{w}\))/],
+            DriveCSS.token.NOTFUNCTION, [/not{w}\(/],
+	    DriveCSS.token.URI, [/(url{w}\({w}{string}{w}\))|(url{w}\({w}{url}{w}\))/],
             DriveCSS.token.FUNCTION, [/{ident}{w}\(/],
-            DriveCSS.token.UNICODERANGE, [/(?:U\+{h}{1,6}-{h}{1,6})|(?:U\+{range})/],
+            DriveCSS.token.UNICODERANGE, [/(U\+{h}{1,6}-{h}{1,6})|(U\+{range})/],
 	    
             DriveCSS.token.ALSO, [/./, undefined, undefined, true]
 	]
@@ -88,7 +88,7 @@ DriveCSS.CSSLexer = function(source) {
         for (var o in defs) {
             def = def.replace(new RegExp('{' + o + '}', 'g'), defs[o]);
         }
-        defs[n] = '(?:' + def + ')'; 
+        defs[n] = '(' + def + ')'; 
     }
     
     var rules = lex.rules;
@@ -102,7 +102,7 @@ DriveCSS.CSSLexer = function(source) {
             for (var n in defs) {
                 reg = reg.replace(new RegExp('{' + n + '}', 'g'), defs[n]);
             }
-            rule[0] = new RegExp('^(?:' + reg + ')');
+            rule[0] = new RegExp('^(' + reg + ')');
         }
     }
 
