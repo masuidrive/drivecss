@@ -1,8 +1,8 @@
 %token UNIMPORTANT_TOK
-%token CDO CDC INCLUDES DASHMATCH BEGINSWITH ENDSWITH CONTAINS MEDIA_NOT MEDIA_ONLY MEDIA_AND
-%token STRING INVALID IDENT NTH HEX IDSEL HASH SYM IMPORTANT_SYM
+%token CDO CDC INCLUDES DASHMATCH BEGINSWITH ENDSWITH CONTAINS QUERY_NOT QUERY_ONLY QUERY_AND
+%token STRING IDENT NTH HEX IDSEL SYM IMPORTANT_SYM
 %token EMS EXS LENGTH ANGLE TIME FREQ DIMENSION PERCENTAGE INTEGER FLOATTOKEN
-%token NOTFUNCTION URI FUNCTION UNICODERANGE MEDIAQUERY_END
+%token NOTFUNCTION URI FUNCTION UNICODERANGE QUERY_END
 %token ALSO 
 
 %left '+' '-'
@@ -11,8 +11,9 @@
 %right IDENT
 %nonassoc HEX IDSEL ':' '.' '[' '*'
 
+
 %%
-start	: stylesheet
+start	: stylesheet { this.tree = $1; }
 	;
 
 stylesheet
@@ -20,9 +21,9 @@ stylesheet
 	;
 
 rule_list
-	: /* empty */
-	| rule_list rule maybe_sgml
-	| rule_list ';' rule maybe_sgml
+	: /* empty */ { $$ = []; }
+	| rule_list rule maybe_sgml { $1.push($2); $$ = $1; }
+	| rule_list ';' rule maybe_sgml { $1.push($3); $$ = $1; }
 	;
 
 maybe_sgml
@@ -35,9 +36,9 @@ rule	: ruleset
 	| sym
 	;
 
-sym	: SYM expr ';'
-	| SYM '{' declaration_list '}'
-	| SYM keyframe_name '{' keyframes_rule '}' 
+sym	: SYM expr ';' { $$ = new DriveCSS.Node("symbol", $1, $2); }
+	| SYM '{' declaration_list '}' { $$ = new DriveCSS.Node("symbol", $1, $2); }
+	| SYM keyframe_name '{' keyframes_rule '}'  { $$ = new DriveCSS.Node("symbol", $1, $2, $3); }
 	;
 
 keyframe_name
@@ -46,17 +47,17 @@ keyframe_name
     	;
 
 keyframes_rule
-	: /* empty */ 
-    	| keyframes_rule keyframe_rule
+	: /* empty */ { $$ = new DriveCSS.Node("keyframes_rule"); }
+    	| keyframes_rule keyframe_rule { $$ = $1.add($2); }
 	;
 
 keyframe_rule
-	:  key_list '{' declaration_list '}'
+	:  key_list '{' declaration_list '}' { $$ = new DriveCSS.Node("keyframe_rule", $1, $3); }
 	;
 
 key_list
-	: key
-	| key_list ',' key
+	: key { $$ = new DriveCSS.Node("key_list", $1); }
+	| key_list ',' key { $$ = $1.add($3); }
 	;
 
 key	: PERCENTAGE
@@ -64,18 +65,18 @@ key	: PERCENTAGE
 	;
 
 ruleset
-	: selector_list '{' declaration_list '}' { console.log("S> "+$1+">>"+$3); }
+	: selector_list '{' declaration_list '}' { $$ = new DriveCSS.Node('selector', $1, $3); }
 	;
 
 
 selector_list
-	: selector { $$ = $1; }
-	| selector_list ',' selector { $$ = $1+$2+$3; }
+	: selector { $$ = new DriveCSS.Node("selector_list", $1); }
+	| selector_list ',' selector { $$ = $1.add($3); }
 	;
 
 selector
 	: simple_selector { $$ = $1; }
-	| selector combinator simple_selector { $$ = $1 + " " + $2; }
+	| selector combinator simple_selector { $$ = $1 + " " + $2 + " " + $3; }
 	;
 
 simple_selector
@@ -88,9 +89,9 @@ simple_selector
 	;
 
 namespace_selector
-	: '|' { $$ = ''; }
-	| '*' '|' { $$ = $1; }
-	| IDENT '|' { $$ = $1; }
+	: '|'
+	| '*' '|'
+	| IDENT '|'
 	;
 
 element_name
@@ -111,7 +112,7 @@ specifier
 	| pseudo
 	;
 
-class	: '.' IDENT { $$ = $1+$2; }
+class	: '.' IDENT
 	;
 
 attr_name
@@ -148,18 +149,18 @@ pseudo
 
 
 declaration_list
-	: declaration { console.log("b1>" + $1); }
-	| decl_list { console.log("b2>" + $1); }
+	: declaration { $$ = new DriveCSS.Node("declaration_list", $1); }
+	| decl_list
 	;
 
 decl_list
-	: declaration ';' { $$ = $1; console.log("a1>" + $1); }
-	| decl_list declaration ';' { $$ = $2; console.log("a2>" + $2); }
+	: declaration ';' { $$ = new DriveCSS.Node("declaration_list", $1); }
+	| decl_list declaration ';' { $$ = $1.add($2); }
 	;
 
 declaration
-	: property ':' expr { $$ = ($1 + ">"+$3); }
-	| property ':' expr prio { $$ = ($1 + ">"+$3+" "+$4); }
+	: property ':' expr	 { $$ =  new DriveCSS.Node($2, $1, $3); }
+	| property ':' expr prio { $$ =  new DriveCSS.Node($2, $1, $3+" "+$4); }
 	;
 
 prio	: IMPORTANT_SYM
@@ -175,7 +176,8 @@ property: IDENT
 	;
 	
 unary_operator
-        : '-' | '+'
+        : '-'
+	| '+'
         ;
 
 combinator
@@ -184,30 +186,41 @@ combinator
 	| '>'
 	;
 
-expr	: term { $$ = $1 }
-	| expr operator term { $$ = $1 + " " + $2 + " " + $3; }
+expr	: term	{ $$ = new DriveCSS.Node('expr', $1); }
+	| expr operator term { $$ = $2 ? new DriveCSS.Node($2, $1, $3) : $1.add($3); }
   	;
 
 hexcolor
-	: HASH
+	: HEX
 	;
 
 function
-	: FUNCTION expr ')'
+	: FUNCTION expr ')'	{ $$ = new DriveCSS.Node("function", $1, $2); }
 	;
-
-term	: INTEGER | unary_operator INTEGER
-	| EMS | unary_operator EMS
-	| EXS | unary_operator EXS
-	| LENGTH | unary_operator LENGTH
-	| ANGLE | unary_operator ANGLE
-	| TIME | unary_operator TIME
-	| FREQ | unary_operator FREQ
-	| STRING
-	| IDENT
-	| URI
-	| hexcolor
-	| function
+					
+term	: INTEGER               { $$ = new DriveCSS.Node("number", parseInt($1)); }
+	| unary_operator INTEGER { $$ = new DriveCSS.Node("number", parseInt($1+$2)); }
+	| FLOATTOKEN            { $$ = new DriveCSS.Node("number", parseFloat($1)); }
+	| unary_operator FLOATTOKEN { $$ = new DriveCSS.Node("number", parseFlaot($1+$2)); }
+	| EMS                   { $$ = new DriveCSS.Node("ems", $1); }
+	| unary_operator EMS    { $$ = new DriveCSS.Node("ems", $1+$2); }
+	| EXS                   { $$ = new DriveCSS.Node("exs", $1); }
+	| unary_operator EXS    { $$ = new DriveCSS.Node("exs", $1+$2); }
+	| LENGTH                { $$ = new DriveCSS.Node("length", $1); }
+	| unary_operator LENGTH { $$ = new DriveCSS.Node("length", $1+$2); }
+	| ANGLE                 { $$ = new DriveCSS.Node("angle", $1); }
+	| unary_operator ANGLE  { $$ = new DriveCSS.Node("angle", $1+$2); }
+	| TIME                  { $$ = new DriveCSS.Node("time", $1); }
+	| unary_operator TIME   { $$ = new DriveCSS.Node("time", $1+$2); }
+	| FREQ                  { $$ = new DriveCSS.Node("freq", $1); }
+	| unary_operator FREQ   { $$ = new DriveCSS.Node("freq", $1+$2); }
+	| PERCENTAGE            { $$ = new DriveCSS.Node("percentage", $1); }
+	| unary_operator PERCENTAGE { $$ = new DriveCSS.Node("percentage", $1+$2); }
+	| STRING                { $$ = new DriveCSS.Node("string", $1); }
+	| IDENT                 { $$ = new DriveCSS.Node("ident", $1); }
+	| URI                   { $$ = new DriveCSS.Node("uri", $1); }
+	| hexcolor              { $$ = new DriveCSS.Node("hexcolor", $1); }
+	| function              { $$ = $1.replace(/\(/,""); }
 	;
 
 %%
