@@ -67,8 +67,9 @@ var units = {
     'TIME': ['ms', 's'],
     'FREQ': ['hz', 'khz'],
     'DIMENSION': ['ident', 'f00', 'bar'],
-    'PERCENTAGE': ['%'],
+    'PERCENTAGE': ['%']
 };
+
 for(var key in units) {
     for(var i in units[key]) {
 	var unit = units[key][i];

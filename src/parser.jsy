@@ -1,3 +1,8 @@
+/***
+   CSS parser
+   Yuichiro MASUI a.k.a. masuidrive <masui@masuidrive.jp>
+   http://github.com/masuidrive/drivecss/
+*/
 %token UNIMPORTANT_TOK
 %token CDO CDC INCLUDES DASHMATCH BEGINSWITH ENDSWITH CONTAINS QUERY_NOT QUERY_ONLY QUERY_AND
 %token STRING IDENT NTH HEX IDSEL SYM IMPORTANT_SYM

@@ -1,3 +1,8 @@
+/***
+   CSS parser
+   Yuichiro MASUI a.k.a. masuidrive <masui@masuidrive.jp>
+   http://github.com/masuidrive/drivecss/
+*/
 $semval($) yyval
 $semval($,%t) yyval
 $semval(%n) yyastk[yysp-(%l-%n)]

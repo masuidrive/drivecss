@@ -1,6 +1,9 @@
-/* Lexical analyzer
-
-   Originai is 
+/***
+   CSS lexical analyzer
+   Yuichiro MASUI a.k.a. masuidrive <masui@masuidrive.jp>
+   http://github.com/masuidrive/drivecss/
+   
+   Original by amachang  License is MIT.
    http://translate.google.com/translate?u=http%3A%2F%2Fd.hatena.ne.jp%2Famachang%2F20080502%2F1209732467&sl=ja
 */
 var DriveCSS;

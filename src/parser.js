@@ -1,3 +1,8 @@
+/***
+   CSS parser
+   Yuichiro MASUI a.k.a. masuidrive <masui@masuidrive.jp>
+   http://github.com/masuidrive/drivecss/
+*/
 
 var DriveCSS;
 DriveCSS = DriveCSS || {};
@@ -15,29 +20,28 @@ DriveCSS.token.QUERY_NOT = 265;
 DriveCSS.token.QUERY_ONLY = 266;
 DriveCSS.token.QUERY_AND = 267;
 DriveCSS.token.STRING = 268;
-DriveCSS.token.INVALID = 269;
-DriveCSS.token.IDENT = 270;
-DriveCSS.token.NTH = 271;
-DriveCSS.token.HEX = 272;
-DriveCSS.token.IDSEL = 273;
-DriveCSS.token.SYM = 274;
-DriveCSS.token.IMPORTANT_SYM = 275;
-DriveCSS.token.EMS = 276;
-DriveCSS.token.EXS = 277;
-DriveCSS.token.LENGTH = 278;
-DriveCSS.token.ANGLE = 279;
-DriveCSS.token.TIME = 280;
-DriveCSS.token.FREQ = 281;
-DriveCSS.token.DIMENSION = 282;
-DriveCSS.token.PERCENTAGE = 283;
-DriveCSS.token.INTEGER = 284;
-DriveCSS.token.FLOATTOKEN = 285;
-DriveCSS.token.NOTFUNCTION = 286;
-DriveCSS.token.URI = 287;
-DriveCSS.token.FUNCTION = 288;
-DriveCSS.token.UNICODERANGE = 289;
-DriveCSS.token.QUERY_END = 290;
-DriveCSS.token.ALSO = 291;
+DriveCSS.token.IDENT = 269;
+DriveCSS.token.NTH = 270;
+DriveCSS.token.HEX = 271;
+DriveCSS.token.IDSEL = 272;
+DriveCSS.token.SYM = 273;
+DriveCSS.token.IMPORTANT_SYM = 274;
+DriveCSS.token.EMS = 275;
+DriveCSS.token.EXS = 276;
+DriveCSS.token.LENGTH = 277;
+DriveCSS.token.ANGLE = 278;
+DriveCSS.token.TIME = 279;
+DriveCSS.token.FREQ = 280;
+DriveCSS.token.DIMENSION = 281;
+DriveCSS.token.PERCENTAGE = 282;
+DriveCSS.token.INTEGER = 283;
+DriveCSS.token.FLOATTOKEN = 284;
+DriveCSS.token.NOTFUNCTION = 285;
+DriveCSS.token.URI = 286;
+DriveCSS.token.FUNCTION = 287;
+DriveCSS.token.UNICODERANGE = 288;
+DriveCSS.token.QUERY_END = 289;
+DriveCSS.token.ALSO = 290;
 
 DriveCSS.CSSParser = function(lexer) {
     this.lexer = lexer;
@@ -71,14 +75,14 @@ DriveCSS.CSSParser = function(lexer) {
 	   44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
 	   44,   44,   44,   44,   44,   44,   44,   44,   44,   44,
 	   44,   44,   44,   44,   44,   44,    1,   44,    2,    3,
-	    4,    5,    6,    7,    8,   44,   44,   44,    9,   44,
-	   10,   44,   11,   12,   13,   14,   15,   16,   17,   18,
-	   19,   20,   44,   21,   22,   23,   24,   25,   26,   44,
-	   44,   44
+	    4,    5,    6,    7,    8,   44,   44,   44,    9,   10,
+	   44,   11,   12,   13,   14,   15,   16,   17,   18,   19,
+	   20,   44,   21,   22,   23,   24,   25,   26,   44,   44,
+	   44
     ];
     
     var YYBADCH = 44;
-    var YYMAXLEX = 292;
+    var YYMAXLEX = 291;
     var YYTERMS = 44;
     var YYNONTERMS = 38;
     
