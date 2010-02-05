@@ -26,8 +26,8 @@ DriveCSS.CSSLexer = function(source) {
             'hexcolor',   /{h}{6}|{h}{3}/,
             'ident',      /-?{nmstart}{nmchar}*/,
             'name',       /{nmchar}+/,
-            'intnum',     /[0-9]+/,
-	    'num',        /[0-9]*\.[0-9]+|[0-9]+/,
+            'intnum',     /[-+]?[0-9]+/,
+	    'num',        /[-+]?[0-9]*\.[0-9]+|[-+]?[0-9]+/,
             'url',        /([!#$%&*-~]|{nonascii}|{escape})*/,
             'w',          /[ \t\r\n\f]*/,
             's',          /[ \t\r\n\f]+/,
@@ -163,7 +163,9 @@ DriveCSS.CSSLexer.prototype = {
         if (token == 0) {
             return false;
         }
-
+	
+	// debug
+	console.log({ id:(literal ? tokenBody.charCodeAt(0) : token), value:tokenBody });
         return({ id:(literal ? tokenBody.charCodeAt(0) : token), value:tokenBody });
     },
     reset: function() {

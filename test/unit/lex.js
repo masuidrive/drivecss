@@ -54,11 +54,13 @@ test("xml comment", function(){
 
 test("number", function(){
     assertTokens("1234", [[DriveCSS.token.INTEGER, "1234"]]);
-    assertTokens("-1234", ['-', [DriveCSS.token.INTEGER, "1234"]]);
-    assertTokens("+1234", ['+', [DriveCSS.token.INTEGER, "1234"]]);
+    assertTokens("-1234", [[DriveCSS.token.INTEGER, "-1234"]]);
+    assertTokens("+1234", [[DriveCSS.token.INTEGER, "+1234"]]);
+    assertTokens("- 1234", ['-', DriveCSS.token.WHITESPACE, [ DriveCSS.token.INTEGER, "1234"]]);
+    assertTokens("+ 1234", ['+', DriveCSS.token.WHITESPACE, [DriveCSS.token.INTEGER, "1234"]]);
     assertTokens("1234.55", [[DriveCSS.token.FLOATTOKEN, "1234.55"]]);
-    assertTokens("-1234.55", ['-', [DriveCSS.token.FLOATTOKEN, "1234.55"]]);
-    assertTokens("+1234.55", ['+', [DriveCSS.token.FLOATTOKEN, "1234.55"]]);
+    assertTokens("+-1234.55", ['+', [DriveCSS.token.FLOATTOKEN, "-1234.55"]]);
+    assertTokens("-+1234.55", ['-', [DriveCSS.token.FLOATTOKEN, "+1234.55"]]);
 });
 
 var units = {
@@ -77,11 +79,15 @@ for(var key in units) {
 	var unit = units[key][i];
 	test('number + "'+unit+'"', (function(key, unit){return(function() {
 	    assertTokens("1234"+unit, [[DriveCSS.token[key], "1234"+unit]]);
-	    assertTokens("-1234"+unit, ['-', [DriveCSS.token[key], "1234"+unit]]);
-	    assertTokens("+1234"+unit, ['+', [DriveCSS.token[key], "1234"+unit]]);
+	    assertTokens("-1234"+unit, [[DriveCSS.token[key], "-1234"+unit]]);
+	    assertTokens("+1234"+unit, [[DriveCSS.token[key], "+1234"+unit]]);
+	    assertTokens("- 1234"+unit, ['-', DriveCSS.token.WHITESPACE, [DriveCSS.token[key], "1234"+unit]]);
+	    assertTokens("+ 1234"+unit, ['+', DriveCSS.token.WHITESPACE, [DriveCSS.token[key], "1234"+unit]]);
 	    assertTokens("1234.55"+unit, [[DriveCSS.token[key], "1234.55"+unit]]);
-	    assertTokens("-1234.55"+unit, ['-', [DriveCSS.token[key], "1234.55"+unit]]);
-	    assertTokens("+1234.55"+unit, ['+', [DriveCSS.token[key], "1234.55"+unit]]);
+	    assertTokens("-1234.55"+unit, [[DriveCSS.token[key], "-1234.55"+unit]]);
+	    assertTokens("+1234.55"+unit, [[DriveCSS.token[key], "+1234.55"+unit]]);
+	    assertTokens("- 1234.55"+unit, ['-', DriveCSS.token.WHITESPACE, [DriveCSS.token[key], "1234.55"+unit]]);
+	    assertTokens("+ 1234.55"+unit, ['+', DriveCSS.token.WHITESPACE, [DriveCSS.token[key], "1234.55"+unit]]);
 	})})(key, unit));
     }
 }
